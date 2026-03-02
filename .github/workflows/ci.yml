@@ -1,0 +1,31 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Simulate Build
+        run: echo "Building project..."
+
+      - name: Slack Success Notification
+        if: success()
+        run: |
+          curl -X POST -H "Content-type: application/json" \
+          --data "{\"text\":\"CI Build Successful 🚀\"}" \
+          ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Slack Failure Notification
+        if: failure()
+        run: |
+          curl -X POST -H "Content-type: application/json" \
+          --data "{\"text\":\"CI Build Failed ❌\"}" \
+          ${{ secrets.SLACK_WEBHOOK }}
